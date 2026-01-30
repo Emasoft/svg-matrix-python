@@ -14,6 +14,24 @@ uv tool install svg-matrix --python 3.12
 
 This installs `psvgm`, `psvg-matrix`, `psvgfonts`, and `psvglinter` globally.
 
+**Upgrade to latest version:**
+
+```bash
+uv tool upgrade svg-matrix
+```
+
+**Uninstall:**
+
+```bash
+uv tool uninstall svg-matrix
+```
+
+**List installed tools:**
+
+```bash
+uv tool list
+```
+
 ### As a Library
 
 For use in Python projects:
