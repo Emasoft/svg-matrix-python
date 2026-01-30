@@ -19,7 +19,7 @@ Example usage:
     to_plain_svg("inkscape.svg", "plain.svg")
 """
 
-__version__ = "1.3.8"
+__version__ = "1.3.9"
 
 from svg_matrix.cli import get_info, run_svg_matrix, run_svgm
 from svg_matrix.conversion import convert_shapes, flatten, to_plain_svg

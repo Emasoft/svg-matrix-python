@@ -25,22 +25,22 @@ def find_runtime() -> tuple[str, list[str]]:
 
     Returns:
         Tuple of (runtime_name, command_prefix)
-        e.g., ("bun", ["bunx", "@emasoft/svg-matrix"])
+        e.g., ("bun", ["bunx"]) - binary name is appended by run_command
 
     Raises:
         RuntimeError: If no runtime is available
     """
     # Prefer bunx (faster, better caching)
     if shutil.which("bunx"):
-        return ("bun", ["bunx", "@emasoft/svg-matrix"])
+        return ("bun", ["bunx"])
 
     # Fall back to npx
     if shutil.which("npx"):
-        return ("node", ["npx", "@emasoft/svg-matrix"])
+        return ("node", ["npx"])
 
     # Check if bun exists but bunx doesn't (shouldn't happen)
     if shutil.which("bun"):
-        return ("bun", ["bun", "x", "@emasoft/svg-matrix"])
+        return ("bun", ["bun", "x"])
 
     raise RuntimeError(
         "No JavaScript runtime found. Install Bun (recommended) or Node.js:\n"
