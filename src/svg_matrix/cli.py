@@ -2,6 +2,14 @@
 CLI wrapper functions and entry points.
 
 Provides direct access to the svg-matrix CLI tools from Python.
+These entry points mirror the exact options and flags of the original
+Node.js/Bun CLI tools.
+
+CLI Commands (installed via pip):
+    psvgm       - SVG optimization (mirrors: svgm)
+    psvg-matrix - SVG matrix operations (mirrors: svg-matrix)
+    psvgfonts   - SVG font operations (mirrors: svgfonts)
+    psvglinter  - SVG linting (mirrors: svglinter)
 """
 
 import json
@@ -94,53 +102,76 @@ def get_info(svg_path: Union[str, Path]) -> dict[str, Any]:
 
 
 # CLI entry points for pyproject.toml scripts
+# These pass through all arguments to the underlying Node.js CLI
 
 
 def svgm_main() -> None:
-    """Entry point for svgm-py command."""
+    """
+    Entry point for psvgm command.
+
+    Mirrors the svgm CLI exactly - all arguments are passed through.
+    Usage: psvgm [options] <input> [-o <output>]
+    """
     ensure_runtime()
     result = run_svgm(sys.argv[1:], timeout=300)
     if result["stdout"]:
-        pass
+        sys.stdout.write(result["stdout"])
     if result["stderr"]:
-        pass
+        sys.stderr.write(result["stderr"])
     sys.exit(result["returncode"])
 
 
 def svg_matrix_main() -> None:
-    """Entry point for svg-matrix-py command."""
+    """
+    Entry point for psvg-matrix command.
+
+    Mirrors the svg-matrix CLI exactly - all arguments are passed through.
+    Usage: psvg-matrix <command> [options] <input> [-o <output>]
+    """
     ensure_runtime()
     result = run_svg_matrix(sys.argv[1:], timeout=300)
     if result["stdout"]:
-        pass
+        sys.stdout.write(result["stdout"])
     if result["stderr"]:
-        pass
+        sys.stderr.write(result["stderr"])
     sys.exit(result["returncode"])
 
 
 def svgfonts_main() -> None:
-    """Entry point for svgfonts-py command."""
+    """
+    Entry point for psvgfonts command.
+
+    Mirrors the svgfonts CLI exactly - all arguments are passed through.
+    Usage: psvgfonts <command> [options] <input> [-o <output>]
+    """
     ensure_runtime()
     try:
         result = run_command(["svgfonts", *sys.argv[1:]], timeout=300)
         if result.stdout:
-            pass
+            sys.stdout.write(result.stdout)
         if result.stderr:
-            pass
+            sys.stderr.write(result.stderr)
         sys.exit(result.returncode)
-    except Exception:
+    except Exception as e:
+        sys.stderr.write(f"Error: {e}\n")
         sys.exit(1)
 
 
 def svglinter_main() -> None:
-    """Entry point for svglinter-py command."""
+    """
+    Entry point for psvglinter command.
+
+    Mirrors the svglinter CLI exactly - all arguments are passed through.
+    Usage: psvglinter [options] <input>
+    """
     ensure_runtime()
     try:
         result = run_command(["svglinter", *sys.argv[1:]], timeout=300)
         if result.stdout:
-            pass
+            sys.stdout.write(result.stdout)
         if result.stderr:
-            pass
+            sys.stderr.write(result.stderr)
         sys.exit(result.returncode)
-    except Exception:
+    except Exception as e:
+        sys.stderr.write(f"Error: {e}\n")
         sys.exit(1)

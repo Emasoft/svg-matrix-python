@@ -112,20 +112,31 @@ print(f"Width: {info.get('width')}, Height: {info.get('height')}")
 
 ## CLI Commands
 
-The package installs Python wrapper commands:
+The package installs CLI wrappers that mirror the Node.js/Bun commands exactly:
+
+| Python CLI | Mirrors | Description |
+|------------|---------|-------------|
+| `psvgm` | `svgm` | SVG optimization |
+| `psvg-matrix` | `svg-matrix` | SVG matrix operations |
+| `psvgfonts` | `svgfonts` | SVG font operations |
+| `psvglinter` | `svglinter` | SVG linting |
 
 ```bash
-# Optimize SVG
-svgm-py input.svg -o output.svg -p 4
+# Optimize SVG (same options as svgm)
+psvgm input.svg -o output.svg -p 4
 
 # Get SVG info
-svg-matrix-py info input.svg
+psvg-matrix info input.svg
 
 # Lint SVG
-svglinter-py input.svg
+psvglinter input.svg
 
 # Font operations
-svgfonts-py embed input.svg -o output.svg
+psvgfonts embed input.svg -o output.svg
+
+# Show help (same as Node.js version)
+psvgm --help
+psvg-matrix --help
 ```
 
 ## Batch Processing
