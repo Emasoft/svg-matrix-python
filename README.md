@@ -4,8 +4,24 @@ Python wrapper for [svg-matrix](https://github.com/Emasoft/SVG-MATRIX) - arbitra
 
 ## Installation
 
+### As a CLI Tool (Recommended)
+
+For command-line usage, install as a [uv](https://docs.astral.sh/uv/) tool:
+
+```bash
+uv tool install svg-matrix --python 3.12
+```
+
+This installs `psvgm`, `psvg-matrix`, `psvgfonts`, and `psvglinter` globally.
+
+### As a Library
+
+For use in Python projects:
+
 ```bash
 pip install svg-matrix
+# or
+uv add svg-matrix
 ```
 
 **Prerequisites:** Requires [Bun](https://bun.sh/) (recommended) or [Node.js](https://nodejs.org/) installed on your system. The package will attempt to auto-install Bun if neither is found.
