@@ -225,6 +225,77 @@ for svg_file in svg_dir.glob("*.svg"):
 | `run_svg_matrix(args, timeout)` | Run svg-matrix CLI |
 | `get_info(svg_path)` | Get SVG file info |
 
+### Geometry Functions
+
+| Function | Description |
+|----------|-------------|
+| `circle_to_path(cx, cy, r, precision)` | Convert circle to SVG path |
+| `ellipse_to_path(cx, cy, rx, ry, precision)` | Convert ellipse to SVG path |
+| `rect_to_path(x, y, w, h, rx, ry, precision)` | Convert rect to SVG path |
+| `line_to_path(x1, y1, x2, y2, precision)` | Convert line to SVG path |
+| `polygon_to_path(points, precision)` | Convert polygon to SVG path |
+| `polyline_to_path(points, precision)` | Convert polyline to SVG path |
+
+### Path Functions
+
+| Function | Description |
+|----------|-------------|
+| `parse_path(path_data)` | Parse SVG path to commands list |
+| `path_to_string(commands, precision)` | Convert commands to path string |
+| `path_to_absolute(path_data)` | Convert to absolute coordinates |
+| `path_to_cubics(path_data)` | Convert to cubic Bezier curves |
+| `transform_path(path_data, matrix, precision)` | Apply transform matrix to path |
+
+### Transform Functions
+
+| Function | Description |
+|----------|-------------|
+| `translate_2d(tx, ty)` | Create translation matrix |
+| `rotate_2d(angle)` | Create rotation matrix (radians) |
+| `scale_2d(sx, sy)` | Create scaling matrix |
+| `transform_2d(matrix, x, y)` | Apply matrix to point |
+| `identity(n)` | Create identity matrix |
+| `multiply_matrices(a, b)` | Multiply two matrices |
+
+### Precision Functions
+
+| Function | Description |
+|----------|-------------|
+| `get_kappa()` | Get circular arc kappa constant |
+| `set_precision(precision)` | Set decimal precision |
+| `get_precision()` | Get current precision |
+
+## Library Usage Examples
+
+```python
+from svg_matrix import (
+    circle_to_path, rect_to_path,
+    translate_2d, rotate_2d, scale_2d,
+    transform_path, multiply_matrices,
+    parse_path
+)
+import math
+
+# Convert shapes to paths
+circle_path = circle_to_path(100, 100, 50)
+rect_path = rect_to_path(0, 0, 100, 50)
+
+# Create transform matrices
+translate = translate_2d(50, 50)
+rotate = rotate_2d(math.pi / 4)  # 45 degrees
+scale = scale_2d(2, 2)
+
+# Compose transforms (right-to-left: scale, then rotate, then translate)
+combined = multiply_matrices(translate, multiply_matrices(rotate, scale))
+
+# Apply transform to path
+transformed = transform_path("M 0 0 L 100 100", combined)
+
+# Parse path to commands
+commands = parse_path("M 0 0 C 50 0 50 100 100 100")
+# Returns: [{'command': 'M', 'args': ['0', '0']}, ...]
+```
+
 ## How It Works
 
 This package is a thin Python wrapper around the [@emasoft/svg-matrix](https://www.npmjs.com/package/@emasoft/svg-matrix) npm package. It uses `bunx` (or `npx` as fallback) to execute the Node.js CLI tools.
