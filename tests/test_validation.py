@@ -2,13 +2,11 @@
 Tests for svg_matrix validation functions.
 """
 
-import tempfile
 from pathlib import Path
 
 import pytest
 
 from svg_matrix import validate_svg, validate_svg_async
-
 
 # Sample SVGs for testing
 VALID_SVG = """<?xml version="1.0" encoding="UTF-8"?>
@@ -68,7 +66,9 @@ class TestValidateSvg:
         is_invalid = not result["valid"]
         has_issues = len(result.get("issues", [])) > 0
         has_error = result.get("error") is not None
-        assert is_invalid or has_issues or has_error, f"Expected invalid result, got: {result}"
+        assert is_invalid or has_issues or has_error, (
+            f"Expected invalid result, got: {result}"
+        )
 
 
 class TestValidateSvgAsync:

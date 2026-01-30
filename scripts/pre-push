@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+# Pre-push hook for svg-matrix Python wrapper
+# Ensures code quality before allowing push to remote
+#
+# Install: cp scripts/pre-push .git/hooks/pre-push && chmod +x .git/hooks/pre-push
+# Or run: ./scripts/setup-hooks.sh
+
+set -e
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${BLUE}  svg-matrix Python Wrapper - Pre-Push Quality Check${NC}"
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+
+# Track failures
+FAILED=0
+
+# Function to run a check
+run_check() {
+    local name="$1"
+    local cmd="$2"
+
+    echo -e "${YELLOW}▶ Running: ${name}${NC}"
+    if eval "$cmd"; then
+        echo -e "${GREEN}✓ ${name} passed${NC}"
+        echo ""
+    else
+        echo -e "${RED}✗ ${name} FAILED${NC}"
+        echo ""
+        FAILED=1
+    fi
+}
+
+# Ensure we're in the project root
+cd "$(git rev-parse --show-toplevel)"
+
+# Check if uv is available
+if ! command -v uv &> /dev/null; then
+    echo -e "${RED}Error: uv is not installed. Install it with: curl -LsSf https://astral.sh/uv/install.sh | sh${NC}"
+    exit 1
+fi
+
+# Sync dependencies (ensure dev deps are installed)
+echo -e "${YELLOW}▶ Syncing dependencies...${NC}"
+uv sync --all-extras --quiet
+echo -e "${GREEN}✓ Dependencies synced${NC}"
+echo ""
+
+# 1. Format check (ruff format --check)
+run_check "Format check (ruff format)" "uv run ruff format --check src/ tests/"
+
+# 2. Lint check (ruff check)
+run_check "Lint check (ruff)" "uv run ruff check src/ tests/"
+
+# 3. Type check (mypy)
+run_check "Type check (mypy)" "uv run mypy src/"
+
+# 4. Security check (bandit)
+run_check "Security check (bandit)" "uv run bandit -r src/ -c pyproject.toml -q"
+
+# 5. Run tests (pytest)
+run_check "Tests (pytest)" "uv run pytest tests/ -v --tb=short"
+
+# 6. Build check (ensure package builds)
+run_check "Build check (uv build)" "uv build --quiet"
+
+# Summary
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+if [ $FAILED -eq 0 ]; then
+    echo -e "${GREEN}✓ All checks passed! Push allowed.${NC}"
+    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    exit 0
+else
+    echo -e "${RED}✗ Some checks failed. Push blocked.${NC}"
+    echo -e "${RED}  Fix the issues above and try again.${NC}"
+    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    exit 1
+fi

@@ -6,8 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from svg_matrix import to_plain_svg, flatten, convert_shapes
-
+from svg_matrix import convert_shapes, flatten, to_plain_svg
 
 INKSCAPE_SVG = """<?xml version="1.0" encoding="UTF-8"?>
 <svg

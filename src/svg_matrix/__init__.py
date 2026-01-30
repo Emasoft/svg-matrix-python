@@ -21,26 +21,26 @@ Example usage:
 
 __version__ = "1.3.6"
 
+from svg_matrix.cli import get_info, run_svg_matrix, run_svgm
+from svg_matrix.conversion import convert_shapes, flatten, to_plain_svg
+from svg_matrix.optimization import optimize_paths, optimize_svg
 from svg_matrix.validation import validate_svg, validate_svg_async
-from svg_matrix.optimization import optimize_svg, optimize_paths
-from svg_matrix.conversion import to_plain_svg, flatten, convert_shapes
-from svg_matrix.cli import run_svgm, run_svg_matrix, get_info
 
 __all__ = [
     # Version
     "__version__",
+    "convert_shapes",
+    "flatten",
+    "get_info",
+    "optimize_paths",
+    # Optimization
+    "optimize_svg",
+    "run_svg_matrix",
+    # CLI access
+    "run_svgm",
+    # Conversion
+    "to_plain_svg",
     # Validation
     "validate_svg",
     "validate_svg_async",
-    # Optimization
-    "optimize_svg",
-    "optimize_paths",
-    # Conversion
-    "to_plain_svg",
-    "flatten",
-    "convert_shapes",
-    # CLI access
-    "run_svgm",
-    "run_svg_matrix",
-    "get_info",
 ]

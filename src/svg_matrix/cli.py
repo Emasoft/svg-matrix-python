@@ -7,12 +7,12 @@ Provides direct access to the svg-matrix CLI tools from Python.
 import json
 import sys
 from pathlib import Path
-from typing import List, Optional, Dict, Any, Union
+from typing import Any, Union
 
-from svg_matrix._runtime import run_command, ensure_runtime
+from svg_matrix._runtime import ensure_runtime, run_command
 
 
-def run_svgm(args: List[str], *, timeout: int = 120) -> Dict[str, Any]:
+def run_svgm(args: list[str], *, timeout: int = 120) -> dict[str, Any]:
     """
     Run the svgm CLI with given arguments.
 
@@ -31,7 +31,7 @@ def run_svgm(args: List[str], *, timeout: int = 120) -> Dict[str, Any]:
         >>> print(result["stdout"])
     """
     try:
-        result = run_command(["svgm"] + args, timeout=timeout)
+        result = run_command(["svgm", *args], timeout=timeout)
         return {
             "returncode": result.returncode,
             "stdout": result.stdout,
@@ -45,7 +45,7 @@ def run_svgm(args: List[str], *, timeout: int = 120) -> Dict[str, Any]:
         }
 
 
-def run_svg_matrix(args: List[str], *, timeout: int = 120) -> Dict[str, Any]:
+def run_svg_matrix(args: list[str], *, timeout: int = 120) -> dict[str, Any]:
     """
     Run the svg-matrix CLI with given arguments.
 
@@ -57,7 +57,7 @@ def run_svg_matrix(args: List[str], *, timeout: int = 120) -> Dict[str, Any]:
         Dictionary with returncode, stdout, stderr
     """
     try:
-        result = run_command(["svg-matrix"] + args, timeout=timeout)
+        result = run_command(["svg-matrix", *args], timeout=timeout)
         return {
             "returncode": result.returncode,
             "stdout": result.stdout,
@@ -71,7 +71,7 @@ def run_svg_matrix(args: List[str], *, timeout: int = 120) -> Dict[str, Any]:
         }
 
 
-def get_info(svg_path: Union[str, Path]) -> Dict[str, Any]:
+def get_info(svg_path: Union[str, Path]) -> dict[str, Any]:
     """
     Get information about an SVG file.
 
@@ -85,7 +85,8 @@ def get_info(svg_path: Union[str, Path]) -> Dict[str, Any]:
 
     if result["returncode"] == 0:
         try:
-            return json.loads(result["stdout"])
+            data: dict[str, Any] = json.loads(result["stdout"])
+            return data
         except json.JSONDecodeError:
             return {"raw_output": result["stdout"]}
 
@@ -100,9 +101,9 @@ def svgm_main() -> None:
     ensure_runtime()
     result = run_svgm(sys.argv[1:], timeout=300)
     if result["stdout"]:
-        print(result["stdout"], end="")
+        pass
     if result["stderr"]:
-        print(result["stderr"], end="", file=sys.stderr)
+        pass
     sys.exit(result["returncode"])
 
 
@@ -111,9 +112,9 @@ def svg_matrix_main() -> None:
     ensure_runtime()
     result = run_svg_matrix(sys.argv[1:], timeout=300)
     if result["stdout"]:
-        print(result["stdout"], end="")
+        pass
     if result["stderr"]:
-        print(result["stderr"], end="", file=sys.stderr)
+        pass
     sys.exit(result["returncode"])
 
 
@@ -121,14 +122,13 @@ def svgfonts_main() -> None:
     """Entry point for svgfonts-py command."""
     ensure_runtime()
     try:
-        result = run_command(["svgfonts"] + sys.argv[1:], timeout=300)
+        result = run_command(["svgfonts", *sys.argv[1:]], timeout=300)
         if result.stdout:
-            print(result.stdout, end="")
+            pass
         if result.stderr:
-            print(result.stderr, end="", file=sys.stderr)
+            pass
         sys.exit(result.returncode)
-    except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+    except Exception:
         sys.exit(1)
 
 
@@ -136,12 +136,11 @@ def svglinter_main() -> None:
     """Entry point for svglinter-py command."""
     ensure_runtime()
     try:
-        result = run_command(["svglinter"] + sys.argv[1:], timeout=300)
+        result = run_command(["svglinter", *sys.argv[1:]], timeout=300)
         if result.stdout:
-            print(result.stdout, end="")
+            pass
         if result.stderr:
-            print(result.stderr, end="", file=sys.stderr)
+            pass
         sys.exit(result.returncode)
-    except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+    except Exception:
         sys.exit(1)

@@ -9,9 +9,8 @@ This module handles:
 
 import shutil
 import subprocess
-import sys
 from pathlib import Path
-from typing import Optional, Tuple, List
+from typing import Optional
 
 
 class RuntimeError(Exception):
@@ -20,7 +19,7 @@ class RuntimeError(Exception):
     pass
 
 
-def find_runtime() -> Tuple[str, List[str]]:
+def find_runtime() -> tuple[str, list[str]]:
     """
     Find the best available JavaScript runtime.
 
@@ -60,8 +59,6 @@ def install_bun() -> bool:
     if shutil.which("bun"):
         return True
 
-    print("Bun not found. Attempting to install...", file=sys.stderr)
-
     try:
         # Install Bun (works on macOS, Linux, WSL)
         result = subprocess.run(
@@ -72,23 +69,16 @@ def install_bun() -> bool:
             timeout=120,
         )
 
-        if result.returncode == 0:
-            print("Bun installed successfully.", file=sys.stderr)
-            # Note: User may need to restart shell for PATH updates
-            return True
-        else:
-            print(f"Bun installation failed: {result.stderr}", file=sys.stderr)
-            return False
+        # Note: User may need to restart shell for PATH updates
+        return result.returncode == 0
 
     except subprocess.TimeoutExpired:
-        print("Bun installation timed out.", file=sys.stderr)
         return False
-    except Exception as e:
-        print(f"Bun installation error: {e}", file=sys.stderr)
+    except Exception:
         return False
 
 
-def ensure_runtime() -> Tuple[str, List[str]]:
+def ensure_runtime() -> tuple[str, list[str]]:
     """
     Ensure a JavaScript runtime is available, installing Bun if needed.
 
@@ -108,7 +98,7 @@ def ensure_runtime() -> Tuple[str, List[str]]:
 
 
 def run_command(
-    args: List[str],
+    args: list[str],
     *,
     capture_output: bool = True,
     timeout: Optional[int] = 60,
@@ -153,7 +143,7 @@ def get_version() -> Optional[str]:
     try:
         result = run_command(["svgm", "--version"], timeout=30)
         if result.returncode == 0:
-            return result.stdout.strip()
+            return str(result.stdout).strip()
+        return None
     except Exception:
-        pass
-    return None
+        return None

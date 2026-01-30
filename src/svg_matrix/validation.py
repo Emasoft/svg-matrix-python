@@ -7,7 +7,7 @@ Provides validation of SVG files against SVG 1.1 and SVG 2.0 specifications.
 import asyncio
 import json
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Union
+from typing import Any, Union
 
 from svg_matrix._runtime import run_command
 
@@ -16,7 +16,7 @@ def validate_svg(
     svg_input: Union[str, Path],
     *,
     strict: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Validate an SVG file or string.
 
@@ -56,7 +56,7 @@ def validate_svg(
     }
 
 
-def _validate_file(svg_path: Path, *, strict: bool = False) -> Dict[str, Any]:
+def _validate_file(svg_path: Path, *, strict: bool = False) -> dict[str, Any]:
     """Validate an SVG file using the CLI."""
     try:
         args = ["svglinter", str(svg_path.resolve())]
@@ -99,7 +99,7 @@ def _validate_file(svg_path: Path, *, strict: bool = False) -> Dict[str, Any]:
         return {"valid": False, "issues": [], "error": str(e)}
 
 
-def _validate_string(svg_content: str, *, strict: bool = False) -> Dict[str, Any]:
+def _validate_string(svg_content: str, *, strict: bool = False) -> dict[str, Any]:
     """Validate SVG string content using stdin."""
     import tempfile
 
@@ -118,7 +118,7 @@ async def validate_svg_async(
     svg_input: Union[str, Path],
     *,
     strict: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Async version of validate_svg.
 
@@ -135,7 +135,7 @@ async def validate_svg_async(
     )
 
 
-def get_svg_info(svg_path: Union[str, Path]) -> Dict[str, Any]:
+def get_svg_info(svg_path: Union[str, Path]) -> dict[str, Any]:
     """
     Get information about an SVG file.
 
@@ -150,9 +150,10 @@ def get_svg_info(svg_path: Union[str, Path]) -> Dict[str, Any]:
 
         if result.returncode == 0:
             try:
-                return json.loads(result.stdout)
+                data: dict[str, Any] = json.loads(result.stdout)
+                return data
             except json.JSONDecodeError:
-                return {"info": result.stdout.strip(), "error": None}
+                return {"info": str(result.stdout).strip(), "error": None}
 
         return {"error": result.stderr.strip() or "Failed to get info"}
 
