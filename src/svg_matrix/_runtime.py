@@ -97,6 +97,11 @@ def ensure_runtime() -> tuple[str, list[str]]:
         raise
 
 
+# Map CLI binary names to package bin entries
+# These are the bin names from @emasoft/svg-matrix package.json
+_CLI_BINARIES = {"svgm", "svg-matrix", "svgfonts", "svglinter"}
+
+
 def run_command(
     args: list[str],
     *,
@@ -122,7 +127,20 @@ def run_command(
     """
     _, cmd_prefix = ensure_runtime()
 
-    full_command = cmd_prefix + args
+    # If the first arg is one of our CLI binaries, use the full package name
+    # to ensure bunx/npx fetches the correct (latest) version
+    if args and args[0] in _CLI_BINARIES:
+        binary = args[0]
+        rest_args = args[1:]
+        # Use package@latest to bypass bunx cache and get newest version
+        # The --bun flag ensures consistent behavior with bun
+        if cmd_prefix == ["bunx"]:
+            full_command = ["bunx", "@emasoft/svg-matrix@latest", binary, *rest_args]
+        else:
+            # npx uses different syntax
+            full_command = ["npx", "@emasoft/svg-matrix@latest", binary, *rest_args]
+    else:
+        full_command = cmd_prefix + args
 
     return subprocess.run(
         full_command,
