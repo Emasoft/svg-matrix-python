@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&amp;display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&amp;display=swap');
+
+      .title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        font-size: 32px;
+        fill: #2c3e50;
+      }
+      .subtitle {
+        font-family: 'Roboto', sans-serif;
+        font-weight: 400;
+        font-size: 16px;
+        fill: #7f8c8d;
+      }
+      .body-text {
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 400;
+        font-size: 14px;
+        fill: #34495e;
+      }
+      .highlight {
+        font-family: 'Roboto', sans-serif;
+        font-weight: 700;
+        font-size: 18px;
+        fill: #e74c3c;
+      }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="400" height="300" fill="#ecf0f1"/>
+
+  <!-- Title -->
+  <text x="200" y="50" text-anchor="middle" class="title">Sample SVG</text>
+
+  <!-- Subtitle -->
+  <text x="200" y="80" text-anchor="middle" class="subtitle">Using Google Fonts</text>
+
+  <!-- Body text -->
+  <text x="40" y="130" class="body-text">
+    <tspan x="40" dy="0">This SVG demonstrates loading fonts</tspan>
+    <tspan x="40" dy="20">from Google Fonts via @import URLs.</tspan>
+    <tspan x="40" dy="20">The fonts can be embedded for offline use.</tspan>
+  </text>
+
+  <!-- Highlight box -->
+  <rect x="40" y="200" width="320" height="60" rx="8" fill="#3498db" opacity="0.1"/>
+  <text x="200" y="235" text-anchor="middle" class="highlight">Ready for Font Embedding!</text>
+</svg>

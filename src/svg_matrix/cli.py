@@ -79,6 +79,62 @@ def run_svg_matrix(args: list[str], *, timeout: int = 120) -> dict[str, Any]:
         }
 
 
+def run_svgfonts(args: list[str], *, timeout: int = 120) -> dict[str, Any]:
+    """
+    Run the svgfonts CLI with given arguments.
+
+    Args:
+        args: Command-line arguments (e.g., ["embed", "file.svg"])
+        timeout: Timeout in seconds
+
+    Returns:
+        Dictionary with returncode, stdout, stderr
+
+    Example:
+        >>> result = run_svgfonts(["list", "icon.svg"])
+        >>> print(result["stdout"])
+    """
+    try:
+        result = run_command(["svgfonts", *args], timeout=timeout)
+        return {
+            "returncode": result.returncode,
+            "stdout": result.stdout,
+            "stderr": result.stderr,
+        }
+    except Exception as e:
+        return {
+            "returncode": -1,
+            "stdout": "",
+            "stderr": str(e),
+        }
+
+
+def run_svglinter(args: list[str], *, timeout: int = 120) -> dict[str, Any]:
+    """
+    Run the svglinter CLI with given arguments.
+
+    Args:
+        args: Command-line arguments (e.g., ["--fix", "file.svg"])
+        timeout: Timeout in seconds
+
+    Returns:
+        Dictionary with returncode, stdout, stderr
+    """
+    try:
+        result = run_command(["svglinter", *args], timeout=timeout)
+        return {
+            "returncode": result.returncode,
+            "stdout": result.stdout,
+            "stderr": result.stderr,
+        }
+    except Exception as e:
+        return {
+            "returncode": -1,
+            "stdout": "",
+            "stderr": str(e),
+        }
+
+
 def get_info(svg_path: Union[str, Path]) -> dict[str, Any]:
     """
     Get information about an SVG file.

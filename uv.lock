@@ -530,7 +530,7 @@ wheels = [
 
 [[package]]
 name = "svg-matrix"
-version = "1.3.12"
+version = "1.3.13"
 source = { editable = "." }
 
 [package.optional-dependencies]

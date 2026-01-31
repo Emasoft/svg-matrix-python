@@ -193,6 +193,35 @@ for svg_file in svg_dir.glob("*.svg"):
         print(f"Skipped (invalid): {svg_file.name}")
 ```
 
+## Font Embedding
+
+Embed external fonts (including Google Fonts) into SVGs for offline use:
+
+```python
+from svg_matrix import run_svgfonts
+
+# List fonts used in an SVG
+result = run_svgfonts(["list", "input.svg"])
+print(result["stdout"])
+
+# Embed fonts with WOFF2 compression and subsetting
+result = run_svgfonts([
+    "embed",
+    "--woff2",    # Use WOFF2 for smaller size
+    "--subset",   # Only include glyphs used (default)
+    "-o", "output.svg",
+    "input.svg"
+])
+
+# Extract embedded fonts to files
+result = run_svgfonts(["extract", "--extract-dir", "./fonts", "input.svg"])
+
+# Search for similar fonts
+result = run_svgfonts(["search", "--query", "roboto", "--limit", "5"])
+```
+
+See `examples/embed_google_fonts.py` for a complete example.
+
 ## API Reference
 
 ### Validation Functions
@@ -223,6 +252,8 @@ for svg_file in svg_dir.glob("*.svg"):
 |----------|-------------|
 | `run_svgm(args, timeout)` | Run svgm CLI |
 | `run_svg_matrix(args, timeout)` | Run svg-matrix CLI |
+| `run_svgfonts(args, timeout)` | Run svgfonts CLI |
+| `run_svglinter(args, timeout)` | Run svglinter CLI |
 | `get_info(svg_path)` | Get SVG file info |
 
 ### Geometry Functions

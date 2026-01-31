@@ -25,9 +25,15 @@ Example usage:
     transformed = transform_path(path, matrix)
 """
 
-__version__ = "1.3.12"
+__version__ = "1.3.13"
 
-from svg_matrix.cli import get_info, run_svg_matrix, run_svgm
+from svg_matrix.cli import (
+    get_info,
+    run_svg_matrix,
+    run_svgfonts,
+    run_svglinter,
+    run_svgm,
+)
 from svg_matrix.conversion import convert_shapes, flatten, to_plain_svg
 from svg_matrix.library import (
     circle_to_path,
@@ -89,6 +95,8 @@ __all__ = [
     "rotate_2d",
     "run_browser_verification",
     "run_svg_matrix",
+    "run_svgfonts",
+    "run_svglinter",
     "run_svgm",
     "scale_2d",
     "set_precision",
