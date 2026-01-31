@@ -25,7 +25,7 @@ Example usage:
     transformed = transform_path(path, matrix)
 """
 
-__version__ = "1.3.13"
+__version__ = "1.3.14"
 
 from svg_matrix.cli import (
     get_info,
