@@ -48,7 +48,7 @@ def _run_lib_script(script: str, timeout: int = 30) -> Any:
 
     # Wrap script to import library and output JSON
     full_script = f"""
-import('@emasoft/svg-matrix').then(lib => {{
+import('@emasoft/svg-matrix').then(async lib => {{
     {script}
 }}).catch(e => {{
     console.error(JSON.stringify({{error: e.message}}));
@@ -526,6 +526,110 @@ console.log(JSON.stringify(p));
 # =============================================================================
 # SVG Processing Functions
 # =============================================================================
+
+
+def run_browser_verification(verbose: bool = True) -> dict[str, Any]:
+    """
+    Run browser verification tests using Playwright.
+
+    This verifies that svg-matrix's matrix calculations match the browser's
+    native SVG implementation (getCTM). Requires Playwright to be installed.
+
+    Args:
+        verbose: Whether to print detailed output
+
+    Returns:
+        Dictionary with:
+        - passed (int): Number of tests passed
+        - failed (int): Number of tests failed
+        - total (int): Total number of tests
+        - success (bool): True if all tests passed
+        - failures (list): Details of failed tests
+
+    Raises:
+        RuntimeError: If Playwright is not installed or tests fail to run
+
+    Note:
+        Install Playwright: npm install playwright && npx playwright install chromium
+    """
+    verbose_flag = "true" if verbose else "false"
+    script = f"""
+const {{ BrowserVerify }} = lib;
+
+// Run standard browser verification tests
+try {{
+    const results = await BrowserVerify.runStandardTests({{ verbose: {verbose_flag} }});
+    console.log(JSON.stringify(results));
+}} catch (e) {{
+    if (e.message.includes('Playwright')) {{
+        console.log(JSON.stringify({{
+            error: 'Playwright not installed. Run: npm i playwright'
+        }}));
+    }} else {{
+        console.log(JSON.stringify({{ error: e.message }}));
+    }}
+}}
+"""
+    result: dict[str, Any] = _run_lib_script(script, timeout=120)
+    return result
+
+
+def verify_matrix_against_browser(
+    width: float,
+    height: float,
+    view_box: str,
+    preserve_aspect_ratio: str = "xMidYMid meet",
+) -> dict[str, Any]:
+    """
+    Verify a viewBox transform against the browser's native getCTM().
+
+    This compares svg-matrix's computeViewBoxTransform() against Chrome's
+    native SVG implementation to ensure W3C SVG2 compliance.
+
+    Args:
+        width: SVG viewport width
+        height: SVG viewport height
+        view_box: viewBox attribute value (e.g., "0 0 100 100")
+        preserve_aspect_ratio: preserveAspectRatio value (e.g., "xMidYMid meet")
+
+    Returns:
+        Dictionary with:
+        - matches (bool): True if library matches browser
+        - browser_ctm (dict): Browser's CTM values {a, b, c, d, e, f}
+        - library_ctm (dict): Library's CTM values
+        - differences (dict): Absolute differences for each component
+
+    Raises:
+        RuntimeError: If Playwright is not installed
+    """
+    script = f"""
+const {{ BrowserVerify }} = lib;
+
+try {{
+    const result = await BrowserVerify.verifyViewBox(
+        {width},
+        {height},
+        {json.dumps(view_box)},
+        {json.dumps(preserve_aspect_ratio)}
+    );
+    console.log(JSON.stringify({{
+        matches: result.matches,
+        browser_ctm: result.browserCTM,
+        library_ctm: result.libraryCTM,
+        differences: result.differences
+    }}));
+}} catch (e) {{
+    if (e.message.includes('Playwright')) {{
+        console.log(JSON.stringify({{
+            error: 'Playwright not installed. Run: npm i playwright'
+        }}));
+    }} else {{
+        console.log(JSON.stringify({{ error: e.message }}));
+    }}
+}}
+"""
+    result: dict[str, Any] = _run_lib_script(script, timeout=60)
+    return result
 
 
 def process_svg(

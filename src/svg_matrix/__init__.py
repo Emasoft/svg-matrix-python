@@ -25,7 +25,7 @@ Example usage:
     transformed = transform_path(path, matrix)
 """
 
-__version__ = "1.3.11"
+__version__ = "1.3.12"
 
 from svg_matrix.cli import get_info, run_svg_matrix, run_svgm
 from svg_matrix.conversion import convert_shapes, flatten, to_plain_svg
@@ -46,11 +46,13 @@ from svg_matrix.library import (
     process_svg,
     rect_to_path,
     rotate_2d,
+    run_browser_verification,
     scale_2d,
     set_precision,
     transform_2d,
     transform_path,
     translate_2d,
+    verify_matrix_against_browser,
 )
 from svg_matrix.optimization import optimize_paths, optimize_svg
 from svg_matrix.validation import validate_svg, validate_svg_async
@@ -85,6 +87,7 @@ __all__ = [
     "process_svg",
     "rect_to_path",
     "rotate_2d",
+    "run_browser_verification",
     "run_svg_matrix",
     "run_svgm",
     "scale_2d",
@@ -96,4 +99,6 @@ __all__ = [
     # Validation
     "validate_svg",
     "validate_svg_async",
+    # Browser Verification
+    "verify_matrix_against_browser",
 ]
